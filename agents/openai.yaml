@@ -1,4 +1,4 @@
 interface:
   display_name: "InDesign 刊物制作"
-  short_description: "模块化 InDesign 刊物开发、验收与冻结保护"
-  default_prompt: "Use $indesign-publication-production to implement and validate this publication task with strict approved-scope protection."
+  short_description: "InDesign 刊物审美设计、专业排版、自动化开发与视觉验收"
+  default_prompt: "Use $indesign-publication-production to design or refine this publication, implement it in InDesign, and validate it without altering approved content or frozen components."

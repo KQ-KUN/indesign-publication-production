@@ -1,11 +1,11 @@
 ---
 name: indesign-publication-production
-description: Implement, repair, validate, freeze, and assemble modular Adobe InDesign/ExtendScript publication projects with strict source scopes, approved-component boundaries, DOCX style contracts, runtime guardrails, and linked external artwork. Use for magazines, journals, commemorative books, catalogs, newsletters, or anthologies involving JSX builds, Paragraph Style mapping, overset/debugging, module freezes, cover artwork, or issue assembly; not for ordinary PDF or Word editing.
+description: Design, implement, refine, validate, freeze, and assemble modular Adobe InDesign/ExtendScript publications. Use for magazines, journals, commemorative books, catalogs, newsletters, or anthologies needing editorial art direction, grids, typography, page rhythm, JSX builds, DOCX style mapping, overset/debugging, approved-component protection, linked artwork, or issue assembly; not for ordinary PDF or Word editing.
 ---
 
 # InDesign Publication Production
 
-Produce the smallest verifiable repository change while preserving approved content, design systems, and frozen modules.
+Create a coherent, readable publication and the smallest verifiable repository change while preserving approved content, design systems, and frozen modules.
 
 ## Start with the task boundary
 
@@ -18,6 +18,9 @@ For a new repository or an unfamiliar status schema, use [references/project-con
 
 ## Classify the request
 
+- **New editorial design:** derive a visual premise from the audience, content, format, and supplied references; then establish a reusable page system before polishing individual pages.
+- **Visual refinement:** diagnose hierarchy, density, rhythm, alignment, typography, and image treatment; change only the authorized design surface.
+- **Visual review:** inspect rendered pages or PDFs, separate observable defects from taste judgments, and rank corrections by impact.
 - **New reusable module:** create only the module, skin/tokens when needed, a thin build entry, and meaningful tests.
 - **Second-sample reuse:** prefer zero shared-module/skin/token changes. Add the sample input, thin build, and minimum fixture test.
 - **Runtime fix:** reproduce or trace the actual host failure; do not redesign unless asked.
@@ -25,6 +28,18 @@ For a new repository or an unfamiliar status schema, use [references/project-con
 - **Freeze:** update only the status record, run relevant tests and frozen-scope checks, then commit/tag as requested.
 - **External artwork:** preserve the artwork as one linked asset; never reconstruct it in JSX after it becomes the source of truth.
 - **Assembly:** combine approved artifacts and modules without reopening their design decisions.
+
+For new design, layout refinement, or visual review, read [references/editorial-design-and-layout.md](references/editorial-design-and-layout.md). Do not impose a house style when a supplied design brief, approved sample, brand system, or artwork already defines the direction.
+
+## Design before decoration
+
+1. Inventory the real content types and difficult cases: shortest and longest titles, dense pages, image-heavy pages, captions, notes, tables, and endings.
+2. State a compact visual premise tying editorial tone to concrete choices such as scale contrast, margins, grid, type roles, color roles, and image behavior.
+3. Establish the page system: trim/bleed, live area, columns and gutters, baseline or vertical rhythm, paragraph/object styles, recurring furniture, and page families.
+4. Test representative pages before tuning the whole issue. Include at least one dense page and one structurally different page.
+5. Refine macro hierarchy and page rhythm before micro-spacing. Decoration cannot repair a weak reading order.
+
+Keep stable design decisions in named tokens, styles, or data. Use local overrides only for genuine exceptions and make those exceptions inspectable.
 
 ## Implementation contracts
 
@@ -34,6 +49,8 @@ For a new repository or an unfamiliar status schema, use [references/project-con
 - Reuse verified place/style-map/threaded-flow patterns without extracting a new framework during a narrow task.
 - Keep new or modified `.jsx` files UTF-8 with BOM (`EF BB BF`). Validate native `#include` paths, not only Node syntax.
 - Never claim InDesign runtime, page count, image visibility, or visual approval from static tests alone.
+- Prefer paragraph, character, object, table, and cell styles over repeated local formatting. Keep typography and geometry configurable rather than scattering magic numbers through JSX.
+- Put repeating furniture on Parent pages; put publication content on document pages. A Parent spread is never proof that content rendered successfully.
 
 For any build or renderer work, read [references/indesign-runtime-guardrails.md](references/indesign-runtime-guardrails.md).
 
@@ -57,6 +74,8 @@ Run only the levels the task authorizes, and label them accurately:
 2. **Native compile:** ExtendScript/InDesign compilation where available. This does not prove successful import or layout.
 3. **Host runtime:** actual InDesign execution, document/story/frame assertions, link checks, and explicit overset result.
 4. **Visual acceptance:** user or agent inspection of the rendered InDesign/PDF output. This is distinct from runtime success.
+
+At visual acceptance, inspect hierarchy at thumbnail scale, reading order at normal scale, page-to-page rhythm, line length and leading, alignment, widows/orphans, image crop and caption association, whitespace distribution, color contrast, bleed, links, and overset. Report which pages or page types were actually inspected.
 
 If the user forbids InDesign, COM, or GUI, stop at static/native checks and leave runtime/visual status pending.
 
