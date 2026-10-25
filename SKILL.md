@@ -18,6 +18,7 @@ For a new repository or an unfamiliar status schema, use [references/project-con
 
 ## Classify the request
 
+- **Small copy correction:** names, roles, dates, punctuation, or a few words with an approved layout. Use [references/small-corrections.md](references/small-corrections.md); do not restart design discovery or the full-issue validation workflow.
 - **New editorial design:** derive a visual premise from the audience, content, format, and supplied references; then establish a reusable page system before polishing individual pages.
 - **Visual refinement:** diagnose hierarchy, density, rhythm, alignment, typography, and image treatment; change only the authorized design surface.
 - **Visual review:** inspect rendered pages or PDFs, separate observable defects from taste judgments, and rank corrections by impact.
@@ -29,7 +30,9 @@ For a new repository or an unfamiliar status schema, use [references/project-con
 - **External artwork:** preserve the artwork as one linked asset; never reconstruct it in JSX after it becomes the source of truth.
 - **Assembly:** combine approved artifacts and modules without reopening their design decisions.
 
-For new design, layout refinement, or visual review, read [references/editorial-design-and-layout.md](references/editorial-design-and-layout.md). Do not impose a house style when a supplied design brief, approved sample, brand system, or artwork already defines the direction.
+For new design, layout refinement, or visual review beyond a small copy correction, read [references/editorial-design-and-layout.md](references/editorial-design-and-layout.md). Do not impose a house style when a supplied design brief, approved sample, brand system, or artwork already defines the direction.
+
+For image placement, archival photographs, posters, portraits, book covers, or unexplained whitespace around media, read [references/image-placement.md](references/image-placement.md). It includes inspected publication examples; borrow their relationships, not their ornament or fixed dimensions.
 
 ## Design before decoration
 
@@ -52,7 +55,7 @@ Keep stable design decisions in named tokens, styles, or data. Use local overrid
 - Prefer paragraph, character, object, table, and cell styles over repeated local formatting. Keep typography and geometry configurable rather than scattering magic numbers through JSX.
 - Put repeating furniture on Parent pages; put publication content on document pages. A Parent spread is never proof that content rendered successfully.
 
-For any build or renderer work, read [references/indesign-runtime-guardrails.md](references/indesign-runtime-guardrails.md).
+Use the existing checked-in runner; do not splice its text into a temporary shell wrapper. On a tool timeout, resume the same job and inspect its stage before considering a rerun. For detailed execution and recovery rules, and for any build or renderer work, read [references/indesign-runtime-guardrails.md](references/indesign-runtime-guardrails.md).
 
 ## External PDF artwork
 
@@ -75,7 +78,9 @@ Run only the levels the task authorizes, and label them accurately:
 3. **Host runtime:** actual InDesign execution, document/story/frame assertions, link checks, and explicit overset result.
 4. **Visual acceptance:** user or agent inspection of the rendered InDesign/PDF output. This is distinct from runtime success.
 
-At visual acceptance, inspect hierarchy at thumbnail scale, reading order at normal scale, page-to-page rhythm, line length and leading, alignment, widows/orphans, image crop and caption association, whitespace distribution, color contrast, bleed, links, and overset. Report which pages or page types were actually inspected.
+For small copy corrections, inspect only the changed region/pages and any pages affected by reflow; retain source integrity and overset checks. Reuse unchanged, fingerprinted output without launching the host. Do not render a whole issue or rebuild contact sheets merely to fix a name.
+
+At broader visual acceptance, inspect hierarchy at thumbnail scale, reading order at normal scale, page-to-page rhythm, line length and leading, alignment, widows/orphans, image crop and caption association, whitespace distribution, color contrast, bleed, links, and overset. Report which pages or page types were actually inspected.
 
 If the user forbids InDesign, COM, or GUI, stop at static/native checks and leave runtime/visual status pending.
 
@@ -92,4 +97,4 @@ Before committing:
 
 For a freeze, set `status:FROZEN`, `runtimeTested:true`, and `frozen:true` only after real host acceptance is supplied or observed. Preserve `designValuesPending` when the project contract requires it. Do not infer approval from a commit or static test.
 
-Report the observable result, checks actually run, runtime/visual limitations, frozen-scope result, commit/tag, and the user-facing build or asset path. Push or tag only when authorized.
+Report the observable result, checks actually run, runtime/visual limitations, frozen-scope result, commit/tag, and the user-facing build or asset path. For a small correction, keep the reply to the changed wording, result link, and a brief verification/status line; leave detailed evidence on disk. Push or tag only when authorized.

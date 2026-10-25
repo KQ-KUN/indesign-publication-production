@@ -71,6 +71,8 @@ Choose representative stress cases. A system that works only on the opener is no
 
 ### Images and captions
 
+For media geometry, semantic anchoring, page-density diagnosis, and inspected examples, use [image-placement.md](image-placement.md). Diagnose the actual occupied box before changing image scale.
+
 - Respect approved crops and source restrictions. Do not invent, regenerate, OCR, or replace imagery without authorization.
 - Define image behaviors: full bleed, live-area, column width, anchored inline, fixed canvas, or spread.
 - Keep captions visually subordinate but readable and unmistakably associated with the correct image.
@@ -88,7 +90,7 @@ Choose representative stress cases. A system that works only on the opener is no
 - Use Paragraph/Character/Object/Table/Cell Styles as the primary visual API.
 - Keep content data separate from visual parameters.
 - Use Parent pages for recurring furniture only. Render real content to document pages and return the active view to a document page at the end of a build.
-- Prefer threaded frames, anchored objects, span/split-column settings, and keep options over page-specific coordinate patches.
+- Prefer threaded frames, anchored objects, span/split-column settings, and keep options over page-specific coordinate patches. When approved flow repeatedly produces poor closing pages, use an explicit content-ID-based layout override for that bounded tail rather than repeatedly shrinking every image. Preserve locked earlier pages and validate their content placement.
 - If one page genuinely needs an exception, isolate and name it; do not silently weaken the global system.
 
 ## 6. Review in the right order
