@@ -49,7 +49,7 @@ Remove an extra terminal page only after proving it contains no visible module t
 
 ## Inspected publication cases
 
-These are local reference observations, not templates or image assets to copy. Page numbers below are **1-based PDF pages**, not printed folios. Supplied source directory: `D:/HuaweiMoveData/Users/22974/Desktop/社刊资料/参考刊物`. If files are absent later, the observations remain usable; do not require an unrelated machine to recreate this directory.
+These are local reference observations, not templates or image assets to copy. Page numbers below are **1-based PDF pages**, not printed folios. Supplied source directory: the user-provided reference-magazine folder. If files are absent later, the observations remain usable; do not require an unrelated machine to recreate this directory.
 
 | Source | PDF pages inspected | Observed relationship | Apply / boundary |
 | --- | --- | --- | --- |
