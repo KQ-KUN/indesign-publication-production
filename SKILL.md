@@ -32,7 +32,7 @@ For a new repository or an unfamiliar status schema, use [references/project-con
 
 For new design, layout refinement, or visual review beyond a small copy correction, read [references/editorial-design-and-layout.md](references/editorial-design-and-layout.md). Do not impose a house style when a supplied design brief, approved sample, brand system, or artwork already defines the direction.
 
-For image placement, archival photographs, posters, portraits, book covers, or unexplained whitespace around media, read [references/image-placement.md](references/image-placement.md). It includes inspected publication examples; borrow their relationships, not their ornament or fixed dimensions.
+For image placement, archival photographs, posters, portraits, book covers, or unexplained whitespace around media, read [references/image-placement.md](references/image-placement.md). It includes inspected publication examples; borrow their relationships, not their ornament. For new ordinary body images, follow the executable [column geometry contract](references/image-geometry.md): identify visible orientation/count → select one of five modes → calculate shared standard frames → inspect visible pixels → place → bind source captions → validate actual DOM geometry → inspect the exported PDF. Landscape singles fill the column, portrait singles use 2/3 width, same-orientation pairs have equal frames, and mixed pairs have equal height with a 2:1 landscape/portrait width ratio. Explicit user instructions and approved/frozen exceptions override defaults; record incompatibilities instead of silently changing sizes.
 
 ## Design before decoration
 

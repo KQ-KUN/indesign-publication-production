@@ -14,7 +14,7 @@ It focuses on the failure-prone parts of real production repositories:
 - linked external PDF artwork and print geometry;
 - minimal staging, reproducible checks, commits, tags, and handoff.
 
-The repository root is the installable Skill directory. `SKILL.md` is the entry point. Supporting references are loaded only when relevant, and `scripts/` contains read-only validation helpers.
+The repository root is the installable Skill directory. `SKILL.md` is the entry point. Supporting references are loaded only when relevant, and `scripts/` contains validation helpers and opt-in image geometry/proof tools.
 
 ## How to use
 
@@ -47,7 +47,17 @@ python scripts/check_frozen_scope.py D:\path\to\publication-repo
 python scripts/inspect_pdf_artwork.py cover.pdf --trim-mm 185 260 --bleed-mm 3
 ```
 
-Both scripts are read-only. The PDF helper requires `pypdf`.
+Both scripts above are read-only. The PDF helper requires `pypdf`.
+
+New ordinary body images follow the [five-mode column geometry contract](references/image-geometry.md). `scripts/image_layout.py` computes shared frames and checks observed native geometry; Pillow inspects real alpha bounds. The optional proof uses pypdf/pypdfium2 and a real InDesign host, creates only a new diagnostic document, and writes under ignored `.artifacts/`:
+
+```powershell
+python scripts/image_layout.py plan request.json --out plan.json
+python scripts/image_layout.py validate plan.json native.json --tolerance 0.5
+powershell -File scripts/run_image_layout_demo.ps1 -Python python
+```
+
+The proof includes five modes, unequal-aspect cropping, a trimmed portrait and an intentionally rejected padded-canvas negative. Inspect its five rendered pages before claiming visual acceptance. No approved publication is migrated automatically.
 
 Run the included tests with:
 

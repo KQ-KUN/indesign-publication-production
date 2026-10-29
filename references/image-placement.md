@@ -1,6 +1,10 @@
 # Image placement: editorial evidence before scale
 
-Read for photographs, archival images, posters, logos, portraits, book covers, or unexplained blank regions. Explicit user restrictions and approved pages govern; these are decision rules, not a new house style.
+Read for photographs, archival images, posters, logos, portraits, book covers, or unexplained blank regions. Explicit user restrictions and approved pages govern; the default geometry applies to new ordinary body images, not retroactive changes to approved pages.
+
+## Default geometry before visual refinement
+
+Use the five-mode calculator and actual-DOM validator in [image-geometry.md](image-geometry.md). Defaults: a single landscape fills W; a centered portrait uses 2W/3; two same-orientation images share equal widths/heights; mixed landscape/portrait frames share a height with widths 2(W-G)/3 and (W-G)/3. Read the contract for grid gaps, visible-content checks, crop/stretch limits and structured exceptions. Do not choose widths ad hoc from historical size suggestions.
 
 ## Diagnose what actually occupies the page
 
@@ -18,16 +22,21 @@ A portrait cover inside a wide transparent canvas can reserve an entire horizont
 
 | Content/job | Prefer | Check before changing scale |
 | --- | --- | --- |
-| Documentary/history evidence | Modest single-column images inserted near complete event paragraphs | Year ownership, original sequence, readable evidence, current-column space |
-| Portrait poster/book cover | Real portrait asset in one column, or a narrower image with a useful adjacent text measure | Effective resolution, embedded lettering, real alpha bounds, no huge invisible canvas |
+| Documentary/history evidence | Default column geometry near complete event paragraphs, unless an approved archival exception governs | Year ownership, original sequence, readable evidence, current-column space |
+| Portrait poster/book cover | Real portrait asset at 2/3 column width, centered; protected content may require an exception | Effective resolution, embedded lettering, real alpha bounds, no huge invisible canvas |
 | Two related portrait covers | Side-by-side within ONE column, original proportions and small gutter; shared caption only if supplied/authorized | Combined width including gutter; legibility at actual size; source caption/order preserved |
 | Several event photographs | Ordered stack or small aligned group within the permitted column | Group does not silently become page-wide; unequal heights do not create unusable slivers |
 | Main character/hero visual | Give the silhouette adequate vertical room inside its assigned column | Visible body, not empty transparent margins, is the visual anchor; preserve copy column and aspect ratio |
 | Image-led feature/opening | A deliberately larger treatment if the brief permits | Does not override a text-led/history single-column restriction |
 
-For the current Shan History contract, all images/groups stay within one column, preserve source order and year ownership, and retain existing captions. A generic publication's wide image is not authorization to reopen that decision. Existing approved/locked pages remain unchanged unless explicitly authorized. Illustrative starting widths on a ~73mm column are 50–65mm for ordinary photos, 38–50mm for posters, and 25–38mm for marks; these are optional local starting points, never universal rules or fatal assertions. A legible small archival image is preferable to a large low-detail one. Readability, not maximum size, decides.
+### New defaults versus approved Shan exceptions
 
-Maintain aspect ratio unless this exact asset has explicit distortion permission; text-bearing covers, logos and human figures need particular care. Cropping also needs source/brief permission. Do not AI redraw, enhance or manufacture evidence. Evaluate effective PPI at the placed size and final display/print use; thresholds guide review rather than claim that missing detail can be recovered.
+New ordinary body-image units use the column-relative rules above. The former blanket starting suggestions “photos 50–65mm / posters 38–50mm / marks 25–38mm” are superseded and must not override them.
+
+Existing approved Shan History layouts remain protected: all images/groups within one column, source order/year ownership and existing captions preserved, with previously approved small archival displays and bounded tail layouts retained as explicit legacy exceptions. This Skill update neither deletes that contract nor authorizes reflowing locked pages. When future History work is explicitly requested, apply defaults to the authorized new/redesigned units and record any retained protected/low-resolution exception; do not silently migrate the whole chapter.
+
+Ordinary images use proportional cover fitting with safe crop review. Only a mixed pair's ordinary landscape member can use the documented, bounded nonuniform-stretch option; it never applies to emblems, logos, QR codes, important text, archives or faces. Preserve originals, effective resolution, factual content and semantic anchors. If safe fit cannot meet the default, report a named exception. Do not AI redraw or upscale nonexistent detail. See [image-geometry.md](image-geometry.md) for executable safeguards.
+
 
 ## Semantic anchors and small keep units
 
@@ -41,7 +50,7 @@ Maintain aspect ratio unless this exact asset has explicit distortion permission
 
 1. Inspect the sparse/crowded page AND its neighboring spread, using the same renderer/DPI before and after.
 2. Find the first constraint causing the void: oversized box, transparent padding, keep chain, forced break, large group, disconnected frame or genuine semantic boundary.
-3. Change that cause locally. Try a smaller permitted size in the remaining column before moving the complete media unit forward; keep captions readable. Do not shrink all images, reduce body type, force an arbitrary page count or expand artwork solely to fill white space.
+3. Change that cause locally. For a new default unit keep the required widths: adjust insertion position, safely solve/crop its height, or move the complete unit forward. For approved legacy small-image layouts retain their contract. Any new width exception needs a recorded reason; keep captions readable. Do not shrink all images, reduce body type, force an arbitrary page count or expand artwork solely to fill white space.
 4. Preserve a few related visual sizes/alignment axes. Allow purposeful whitespace; no fixed coverage percentage proves good design. Review actual reading continuity and why each blank region exists.
 5. If a bounded tail repeatedly oscillates under automatic flow, stop global compression. Use a named tail override keyed to its events with explicit frames/column assignments and consistent source sequence. Compare/fingerprint locked earlier pages. Limit design candidates to a small coherent set, inspect a representative page, then apply the chosen rule; do not send repeated full exports without a changed hypothesis.
 
@@ -66,4 +75,4 @@ Audit evidence: the three source PDFs contain 116, 163 and 88 pages respectively
 
 ## Native and rendered acceptance
 
-Preserve complete text, image count/order, captions and semantic ownership. Check native link/font/overset status, actual document-page visibility and non-distorted placement. Inspect the exported affected page and neighbor at normal reading size: visible art size, sentence continuity, caption attachment, unplanned voids, overlap and later-page effects. A successful script, matching image count, small file size or “no overset” alone does not prove good layout. After a local change, raster only affected/reflowed pages; a global placement-policy change warrants each distinct media treatment plus dense and ending pages. Do not start InDesign merely to edit this guidance.
+Preserve complete text, image count/order, captions and semantic ownership. Check native link/font/overset status, actual document-page visibility and non-distorted placement. Inspect the exported affected page and neighbor at normal reading size: visible art size, sentence continuity, caption attachment, unplanned voids, overlap and later-page effects. A successful script, matching image count, small file size or “no overset” alone does not prove good layout. After a local change, raster only affected/reflowed pages; a global placement-policy change warrants each distinct media treatment plus dense and ending pages. Documentation-only changes need no host. Calculator/adapter changes use the independent host proof when authorized and available.

@@ -71,7 +71,7 @@ Choose representative stress cases. A system that works only on the opener is no
 
 ### Images and captions
 
-For media geometry, semantic anchoring, page-density diagnosis, and inspected examples, use [image-placement.md](image-placement.md). Diagnose the actual occupied box before changing image scale.
+For media geometry, semantic anchoring, page-density diagnosis, and inspected examples, use [image-placement.md](image-placement.md). Diagnose the actual occupied box before changing image scale. New ordinary body-image units use the executable [five-mode geometry contract](image-geometry.md), not arbitrary per-module widths: full-column landscape, centered 2/3-column portrait, equal-frame same-orientation pairs, or same-height mixed pairs with 2:1 widths. Check actual visible content and native objects, preserve source captions/order, and record incompatible protected-image exceptions. These defaults never authorize changing frozen/approved pages.
 
 - Respect approved crops and source restrictions. Do not invent, regenerate, OCR, or replace imagery without authorization.
 - Define image behaviors: full bleed, live-area, column width, anchored inline, fixed canvas, or spread.
