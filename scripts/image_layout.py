@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 
 MODES = {"SINGLE_LANDSCAPE", "SINGLE_PORTRAIT", "PAIR_LANDSCAPE", "PAIR_PORTRAIT", "PAIR_MIXED"}
@@ -28,6 +29,35 @@ class LayoutException(ValueError):
     def __init__(self, code: str, message: str):
         self.code = code
         super().__init__(f"{code}: {message}")
+
+
+def caption_display(text: str, break_offsets: list[int] | None = None) -> tuple[str, list[int]]:
+    """Insert display-only breaks before left/right labels; never replace source chars."""
+    if break_offsets is None:
+        matches = list(re.finditer(r"[（(【\[]?[左右]图", text))
+        left = [m for m in matches if "左图" in m.group()]
+        right = [m for m in matches if "右图" in m.group()]
+        if not left or not right:
+            return text, []
+        if len(left) != 1 or len(right) != 1:
+            raise LayoutException("CAPTION_LABELS_AMBIGUOUS", "supply explicit display_break_offsets")
+        break_offsets = [m.start() for m in matches if m.start() > 0 and text[m.start()-1] not in "\n\r\u2028"]
+    if (not isinstance(break_offsets, list) or any(isinstance(p, bool) or not isinstance(p, int)
+            or not 0 < p < len(text) for p in break_offsets) or break_offsets != sorted(set(break_offsets))):
+        raise LayoutException("CAPTION_BREAK_OFFSETS", "expected ordered unique source-character offsets")
+    displayed = text
+    for offset in reversed(break_offsets):
+        displayed = displayed[:offset]+"\n"+displayed[offset:]
+    return displayed, list(break_offsets)
+
+
+def restore_caption(displayed: str, offsets: list[int]) -> str:
+    for index, offset in reversed(list(enumerate(offsets))):
+        actual = offset+index
+        if displayed[actual:actual+1] != "\n":
+            raise LayoutException("CAPTION_RECONSTRUCTION", "authorized display break missing")
+        displayed = displayed[:actual]+displayed[actual+1:]
+    return displayed
 
 
 def number(value, name: str, *, positive: bool = True) -> float:
@@ -216,8 +246,10 @@ def calculate(request: dict) -> dict:
         group = [f for f in frames if f["image_id"] in ref]
         left = group[0]["x"]
         right = group[-1]["x"]+group[-1]["width"]
+        display, offsets = caption_display(caption["text"], caption.get("display_break_offsets"))
         cap_frames.append({"x": left, "y": y+height+cap_gap, "width": right-left,
-                           "height": caption["height"], "text": caption["text"], "image_ids": ref})
+                           "height": caption["height"], "text": caption["text"], "image_ids": ref,
+                           "display_text": display, "display_break_offsets": offsets})
     return {"status": "READY", "units": "mm", "layout_mode": mode, "image_count": len(images),
             "column": {"x": x, "y": y, "width": width, "height": available}, "gap": gap,
             "defaults": options, "frames": frames, "captions": cap_frames,
@@ -315,8 +347,15 @@ def validate_geometry(plan: dict, actual: dict, tolerance: float = 0.5) -> dict:
                or not math.isfinite(observed["frame"][k]) for k in ("x", "y", "width", "height")):
             errors.append("MALFORMED_CAPTION_GEOMETRY")
             continue
-        require(observed.get("text") == expected["text"] and observed.get("image_ids") == expected["image_ids"], "CAPTION_TEXT_OR_ORDER")
+        require(observed.get("text") == expected.get("display_text", expected["text"])
+                and observed.get("image_ids") == expected["image_ids"], "CAPTION_TEXT_OR_ORDER")
+        try:
+            require(restore_caption(observed.get("text", ""), expected.get("display_break_offsets", [])) == expected["text"],
+                    "CAPTION_SOURCE_RECONSTRUCTION")
+        except LayoutException:
+            errors.append("CAPTION_SOURCE_RECONSTRUCTION")
         require(not observed.get("overflows", True), "CAPTION_OVERSET")
+        require(observed.get("left_aligned", True) is True, "CAPTION_ALIGNMENT")
         require(observed.get("page_id") == items[0].get("page_id"), "CAPTION_PAGE")
         for key in ("x", "y", "width", "height"):
             require(abs(observed["frame"][key]-expected[key]) <= tolerance, "CAPTION_GEOMETRY")

@@ -46,7 +46,7 @@ Choose representative stress cases. A system that works only on the opener is no
 
 - Confirm trim, bleed, binding, safe area, and facing-page behavior before styling.
 - Set margins by function: binding clearance, reading comfort, running furniture, and desired density.
-- Treat whitespace as allocated space with a role, not leftover area. Large empty zones are successful only when they reinforce hierarchy and remain balanced across the page or spread.
+- Minimize avoidable whitespace as the highest visual priority. Treat margins, gutters and necessary reading intervals as functional space; actively resolve large unused body regions. Resize images or crop safely before accepting a sparse page, and record the constraint if an empty region cannot be resolved. Do not sacrifice source integrity, readability, protected content or locked pages.
 
 ### Grid and rhythm
 
@@ -77,6 +77,16 @@ For media geometry, semantic anchoring, page-density diagnosis, and inspected ex
 - Define image behaviors: full bleed, live-area, column width, anchored inline, fixed canvas, or spread.
 - Keep captions visually subordinate but readable and unmistakably associated with the correct image.
 - Use object styles and fitting rules. Verify effective resolution, links, transparency, crop, and bleed in the actual output path.
+
+### Caption display and full-width footnotes
+
+- Split a shared left/right caption at its image labels into display lines; retain the source string and exact reversible insertion offsets. Do not paraphrase or merge independent captions. Keep each label with its actual image.
+- The next body paragraph starts after one body-line interval, based on the actual body leading. Use paragraph/object spacing, not inserted blank content. Check the rendered visible gap; maintain it even while aggressively reducing other whitespace.
+- Footnotes on a two-column reading page must span the complete two-column live width. Prefer one full-width, two-column body text frame and document `footnoteOptions.enableStraddling = true`; also inspect any text-frame overrides. This option spans columns **inside a frame**, not separate single-column frames.
+- If the renderer uses two independent one-column frames, use an explicitly managed page-level full-width footnote zone or an authorized multicolumn-frame treatment. Preserve reference markers, source note order/content and page association; do not silently turn footnotes into endnotes. A structural change affecting a frozen page needs its own authorization.
+- Native acceptance checks the resolved full-width footnote region, reference/note counts, no clipping/overset, note/body separation and cross-page continuation. A short note's glyph run need not fill the width; verify its container's span, and use a long note stress case to expose an accidental one-column measure. Do not certify full-width notes merely because a Boolean is true.
+
+The current API name `FootnoteOption.enableStraddling` was verified by read-only reflection in InDesign 2026. Adobe describes the scope of [spanning footnotes across columns](https://helpx.adobe.com/indesign/desktop/indexes-and-references/footnotes-and-endnotes/span-footnotes.html) and documents [FootnoteOption](https://developer.adobe.com/indesign/uxp/omv/f/FootnoteOption/). Verify installed-host frame overrides rather than guessing their property names.
 
 ### Page and spread rhythm
 

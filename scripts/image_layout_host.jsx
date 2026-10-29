@@ -60,8 +60,10 @@ var PublicationImageHost = {
         }
         for (i = 0; i < plan.captions.length; i += 1) {
             f = plan.captions[i]; frame = page.textFrames.add(); frame.geometricBounds = this.bounds(f,page);
-            frame.contents = f.text; frame.parentStory.appliedFont = font;
+            frame.contents = typeof f.display_text === "string" ? f.display_text : f.text;
+            frame.parentStory.appliedFont = font;
             frame.parentStory.pointSize = "8pt"; frame.parentStory.leading = "10pt";
+            frame.parentStory.paragraphs.everyItem().justification = Justification.LEFT_ALIGN;
             frame.textFramePreferences.insetSpacing = [0,0,0,0];
             frame.insertLabel("image_layout_caption_ids", f.image_ids.join("|")); captions.push(frame);
         }
@@ -82,7 +84,8 @@ var PublicationImageHost = {
             frame = this.at(unit.captions,i); page = frame.parentPage; this.check(page, "Caption has no page");
             text = String(frame.parentStory.contents); if (text.charAt(text.length-1) === "\r") { text = text.substr(0,text.length-1); }
             ids = frame.extractLabel("image_layout_caption_ids").split("|");
-            captions.push({frame:this.box(frame,page),text:text,image_ids:ids,overflows:frame.overflows,page_id:page.id,font_size_pt:Number(frame.parentStory.pointSize)*72/25.4});
+            captions.push({frame:this.box(frame,page),text:text,image_ids:ids,overflows:frame.overflows,page_id:page.id,font_size_pt:Number(frame.parentStory.pointSize)*72/25.4,
+                left_aligned:frame.parentStory.paragraphs[0].justification === Justification.LEFT_ALIGN});
         }
         return {origin:"InDesign_DOM",units:"mm",items:items,captions:captions,anchored:false};
     }

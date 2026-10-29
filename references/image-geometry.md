@@ -14,7 +14,7 @@ Let `W` be usable column width and `G` be the publication grid's image gap. `G` 
 | `PAIR_PORTRAIT` | each `(W-G)/2` | One common height, equal top/bottom, gap `G`. |
 | `PAIR_MIXED` | landscape `2(W-G)/3`; portrait `(W-G)/3` | One common height, equal top/bottom. Preserve original order even if the portrait comes first. |
 
-For pairs, the solver's natural common height is the geometric mean of the two natural frame heights; it minimizes the larger multiplicative aspect mismatch. A supplied positive `height` overrides this choice. Height must fit the available region including captions. Proportional cover fit is preferred; review actual crop against important people, lettering and archival information. If the crop is unsafe, exceeds the configured limit, or a protected asset cannot fit, the solver raises a structured exception. Change the local height, insertion position or named layout treatment; do not silently shrink widths or all body type to make the geometry pass.
+For pairs, the solver's natural common height is the geometric mean of the two natural frame heights; it minimizes the larger multiplicative aspect mismatch. A supplied positive `height` overrides this choice. Height must fit the available region including captions. Proportional cover fit is preferred; review actual crop against important people, lettering and archival information. If the crop is unsafe, exceeds the configured limit, or a protected asset cannot fit, the solver raises a structured exception. Change the local height, insertion position or named layout treatment. Avoidable-whitespace reduction has higher visual priority than a preferred image size/default ratio: safe resize/crop overrides are allowed with an explicit reason, recalculated frames and full validation of the new contract. Do not silently shrink widths or all body type to make the geometry pass.
 
 Square images count as landscape by default. An explicit incompatible mode/count/orientation is rejected. Orientation is determined from real nontransparent content, not an alpha-padded landscape canvas. A padded asset must first be replaced by an authorized, traceable transparent-margin derivative. Interior transparent holes and opaque white paper are preserved.
 
@@ -54,7 +54,7 @@ plan = calculate({
 })
 ```
 
-The mm values above are sample grid inputs, **not defaults**. `captions` may be empty, one common source caption, or independent source captions. Independent caption widths follow their associated frames; do not invent/merge captions or reverse left/right references. Caption height is a measured style reservation, not permission to clip/shorten text; native overset must still be checked.
+The mm values above are sample grid inputs, **not defaults**. `captions` may be empty, one common source caption, or independent source captions. Independent caption widths follow their associated frames; do not invent/merge captions or reverse left/right references. Shared left/right captions receive a reversible display break before the right label; the plan retains original `text`, `display_text` and insertion offsets. Repeated ambiguous labels require explicit `display_break_offsets`. Reserve a full body-leading interval after the complete caption unit before following body text, through styles/object spacing rather than blank source paragraphs. That interval comes from the actual publication body style, not a universal mm constant; production integration must verify the final visible gap. The geometry adapter alone has no following-body context and cannot certify that gap. Caption height is a measured style reservation, not permission to clip/shorten text; native overset must still be checked.
 
 Each output frame includes `x,y,width,height,image_count,layout_mode,fit_mode,crop_or_stretch_policy`, source identity/hash/alpha bounds, and the expected placed-graphic envelope. The plan also includes the column, captions and required visual-review state. Preserve stable event/year/paragraph/image anchors outside this geometry utility.
 
@@ -83,7 +83,7 @@ Include `scripts/image_layout_host.jsx` for the reusable placer/snapshot adapter
 
 The adapter is deliberately for axis-aligned raster frames. Rotated/sheared or vector-only assets, irregular wrap and nonstandard treatments require explicit extensions/exception evidence, not fabricated alpha bounds. For anchored units, production integration must set `anchored=true` and measure `reserved_height_mm` from the actual paragraph/anchor layout; the standalone nonanchored proof does not claim to test anchored flow. Excess reserved height fails rather than passing on rectangle width alone.
 
-Visible alpha bounds catch transparent padding, but not every perceptual blank region. Inspect opaque paper margins, subjects, inter-paragraph whitespace and neighboring pages in the exported PDF. Geometry PASS is not visual PASS. No blanket page-fill percentage is imposed; deliberate whitespace, source associations, protected content and approved pages take priority over filling every region.
+Visible alpha bounds catch transparent padding, but not every perceptual blank region. Inspect opaque paper margins, subjects, inter-paragraph whitespace and neighboring pages in the exported PDF. Geometry PASS is not visual PASS. Avoidable-whitespace reduction is the highest visual priority; inspect large unused regions and resolve them by local flow, size or safe crop changes. Do not accept empty zones merely as decoration. Source associations, critical-content/proportion safety, approved pages, required margins/gutters and the caption/body one-line separation remain hard boundaries; no blanket page-fill percentage proves quality.
 
 ## Tests and independent host proof
 
@@ -92,7 +92,7 @@ python -m unittest discover -s tests -v
 powershell -File scripts/run_image_layout_demo.ps1 -Python python
 ```
 
-Python runtime needs Pillow for raster fixtures; the optional host proof also uses pypdf and pypdfium2. Reuse available runtimes; do not install another stack merely for this Skill.
+Python runtime needs Pillow for raster fixtures; the optional host proof also uses pypdf, pdfplumber and pypdfium2. Reuse available runtimes; do not install another stack merely for this Skill.
 
 The host proof creates **only a new diagnostic document**: A–E exercise the five modes, F covers unequal landscape ratios, G uses a trimmed alpha derivative, H is an intentionally bad transparent-canvas placement that the native validator must reject. I additionally exercises bounded landscape stretching and J independent captions. Ten units occupy five proof pages. The grid, circles and captions are synthetic test fixtures; they are not publication assets. All paths/logs/PDF/INDD/PNG are under ignored `.artifacts/image-layout/runs/<run-id>/`.
 

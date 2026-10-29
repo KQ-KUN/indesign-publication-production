@@ -29,11 +29,42 @@ def native_fixture(plan):
         {"image_id": f["image_id"], "frame": {k: f[k] for k in ("x", "y", "width", "height")},
          "graphic": dict(f["graphic"]), "page_id": 1, "rotation": 0, "shear": 0}
         for f in plan["frames"]], "captions": [
-            {"frame": {k: c[k] for k in ("x", "y", "width", "height")}, "text": c["text"],
+            {"frame": {k: c[k] for k in ("x", "y", "width", "height")}, "text": c.get("display_text", c["text"]),
              "image_ids": c["image_ids"], "overflows": False, "page_id": 1} for c in plan["captions"]]}
 
 
 class ImageLayoutTests(unittest.TestCase):
+    def test_left_right_caption_breaks_are_reversible(self):
+        for text in ("左图：甲；右图：乙", "（左图）甲（右图）乙", "右图：乙；左图：甲"):
+            display, offsets = layout.caption_display(text)
+            self.assertIn("\n", display)
+            self.assertEqual(layout.restore_caption(display, offsets), text)
+
+    def test_existing_caption_break_and_source_whitespace_are_preserved(self):
+        text = "左图：甲； \n右图：乙"
+        display, offsets = layout.caption_display(text)
+        self.assertEqual(display, text)
+        self.assertEqual(offsets, [])
+        self.assertEqual(layout.restore_caption(display, offsets), text)
+
+    def test_ambiguous_caption_labels_require_explicit_mapping(self):
+        text = "左图：甲，左图资料；右图：乙"
+        with self.assertRaisesRegex(layout.LayoutException, "CAPTION_LABELS_AMBIGUOUS"):
+            layout.caption_display(text)
+        display, offsets = layout.caption_display(text, [text.index("右图")])
+        self.assertEqual(layout.restore_caption(display, offsets), text)
+
+    def test_caption_validator_rejects_unrecorded_character_changes(self):
+        p = layout.calculate(request(image("a", 2), image("b", 2), caption_gap=2,
+                             captions=[{"text": "左图：甲；右图：乙", "image_ids": ["a", "b"], "height": 9}]))
+        actual = native_fixture(p)
+        self.assertTrue(layout.validate_geometry(p, actual)["valid"])
+        actual["captions"][0]["left_aligned"] = False
+        self.assertIn("CAPTION_ALIGNMENT", layout.validate_geometry(p, actual)["errors"])
+        actual["captions"][0]["left_aligned"] = True
+        actual["captions"][0]["text"] = actual["captions"][0]["text"].replace("甲", "丙")
+        self.assertIn("CAPTION_SOURCE_RECONSTRUCTION", layout.validate_geometry(p, actual)["errors"])
+
     def test_A_single_landscape_fills_column(self):
         p = layout.calculate(request(image("a", 2)))
         f = p["frames"][0]

@@ -34,6 +34,12 @@ For new design, layout refinement, or visual review beyond a small copy correcti
 
 For image placement, archival photographs, posters, portraits, book covers, or unexplained whitespace around media, read [references/image-placement.md](references/image-placement.md). It includes inspected publication examples; borrow their relationships, not their ornament. For new ordinary body images, follow the executable [column geometry contract](references/image-geometry.md): identify visible orientation/count → select one of five modes → calculate shared standard frames → inspect visible pixels → place → bind source captions → validate actual DOM geometry → inspect the exported PDF. Landscape singles fill the column, portrait singles use 2/3 width, same-orientation pairs have equal frames, and mixed pairs have equal height with a 2:1 landscape/portrait width ratio. Explicit user instructions and approved/frozen exceptions override defaults; record incompatibilities instead of silently changing sizes.
 
+## Compact pages, captions and footnotes
+
+For new/authorized layouts, minimizing **avoidable whitespace is the highest visual priority**, above preserving a preferred image size, default ratio or decorative breathing room. Resize images or crop ordinary media safely; retain source originals, critical content, semantic order, readable typography, required margins/gutters and the one-line caption/body separation. Approved/frozen layouts remain protected. Record any departure from the five-mode defaults with a whitespace-resolution reason; do not silently weaken geometric tests.
+
+A common caption with left/right image labels puts each label on its own display line. Preserve original characters and record reversible inserted line breaks. Separate the caption unit from following body text by one body-leading interval using paragraph/object style spacing, never source blank paragraphs. Footnotes in two-column reading pages span the full two-column width; check actual footnote geometry, not just a document option. Follow the implementation and acceptance details in [editorial-design-and-layout.md](references/editorial-design-and-layout.md).
+
 ## Design before decoration
 
 1. Inventory the real content types and difficult cases: shortest and longest titles, dense pages, image-heavy pages, captions, notes, tables, and endings.

@@ -21,8 +21,9 @@
         doc.viewPreferences.verticalMeasurementUnits = MeasurementUnits.MILLIMETERS;
         doc.viewPreferences.rulerOrigin = RulerOrigin.PAGE_ORIGIN; doc.zeroPoint = [0,0];
         doc.insertLabel("image_layout_demo_run",request.run_id);
-        var font = app.fonts.itemByName("Arial\tRegular");
-        helper.check(font && font.isValid, "Demo requires installed Arial Regular");
+        var font = app.fonts.itemByName("Source Han Sans SC\tRegular");
+        if (!font || !font.isValid) { font = app.fonts.itemByName("SimSun\tRegular"); }
+        helper.check(font && font.isValid, "Demo requires installed Source Han Sans SC or SimSun for bilingual captions");
         var reports = [], units = [], i, page, heading, note, sample;
         for (i = 0; i < request.cases.length; i += 1) {
             sample = request.cases[i];

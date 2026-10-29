@@ -58,6 +58,8 @@ def prepare():
                    "y": 42, "gap": 3, "caption_gap": 2,
                    "images": [{"id": i, "path": path} for i, path in zip(ids, paths)],
                    "captions": [{"text": ident+" / source caption retained", "image_ids": ids, "height": 7}]}
+        if ident == "E":
+            request["captions"][0].update(text="左图：横屏测试图；右图：竖屏测试图", height=9)
         plan = calculate(request)
         cases.append({"id": ident, "title": title, "note": note, "plan": plan, "expected_valid": True})
     # Controlled native negative case: reproduce a portrait inside a landscape alpha canvas.
@@ -67,7 +69,10 @@ def prepare():
         delta = 95-16; frame["x"] += delta; frame["graphic"]["x"] += delta
         frame["source"] = {"id": frame["image_id"], **inspect_image(padded)}
         frame["fit_mode"] = "CONTAIN"
-    for cap in bad["captions"]: cap["x"] += 95-16; cap["text"] = "H / intentionally rejected padding"
+    for cap in bad["captions"]:
+        cap["x"] += 95-16
+        cap["text"] = cap["display_text"] = "H / intentionally rejected padding"
+        cap["display_break_offsets"] = []
     cases.append({"id": "H", "title": "NEGATIVE / padded canvas", "note": "Intentionally wrong. Same outer frame as G, but small visible art. Native validator must reject this case.",
                   "plan": bad, "expected_valid": False})
     almost_square = chart("STRETCH-PORTRAIT", (1000, 1040), "#9b9576")
@@ -97,6 +102,7 @@ def prepare():
 def verify():
     from pypdf import PdfReader
     import pypdfium2 as pdfium
+    import pdfplumber
     request = json.loads((OUT/"request.json").read_text("utf8"))
     native = json.loads(Path(request["report"]).read_text("utf-8-sig"))
     if native.get("status") != "PASS" or native.get("run_id") != request["run_id"]:
@@ -108,6 +114,8 @@ def verify():
     for case, observation in zip(request["cases"], native["cases"]):
         if case["id"] != observation["id"]: raise RuntimeError("Case order changed")
         result = validate_geometry(case["plan"], observation["actual"])
+        if any(c.get("left_aligned") is not True for c in observation["actual"]["captions"]):
+            raise RuntimeError("Native caption alignment mismatch")
         if any(abs(c["font_size_pt"]-8) > .01 for c in observation["actual"]["captions"]):
             raise RuntimeError("Native caption point-size mismatch (unit conversion)")
         if result["valid"] != case["expected_valid"]: raise RuntimeError(str((case["id"], result)))
@@ -120,10 +128,35 @@ def verify():
     for page in reader.pages:
         width, height = float(page.mediabox.width)*25.4/72, float(page.mediabox.height)*25.4/72
         if abs(width-185) > .5 or abs(height-260) > .5: raise RuntimeError("PDF geometry mismatch")
-    text = "\n".join(p.extract_text() or "" for p in reader.pages)
-    for case in request["cases"]:
-        for cap in case["plan"]["captions"]:
-            if cap["text"] not in text: raise RuntimeError("Caption missing in exported PDF")
+    # Compare actual PDF glyphs in each native caption rectangle. Text extractors
+    # may invent CJK punctuation spaces, which are not source/display changes.
+    with pdfplumber.open(pdf) as pdf_document:
+        for index, (case, observation) in enumerate(zip(request["cases"], native["cases"])):
+            page = pdf_document.pages[index//2]
+            for cap, measured in zip(case["plan"]["captions"], observation["actual"]["captions"]):
+                box = measured["frame"]; pt = 72/25.4
+                left, top = box["x"]*pt, box["y"]*pt
+                right, bottom = left+box["width"]*pt, top+box["height"]*pt
+                chars = [c for c in page.chars
+                         if left <= (c["x0"]+c["x1"])/2 <= right and top <= (c["top"]+c["bottom"])/2 <= bottom]
+                expected_lines = cap.get("display_text", cap["text"]).split("\n")
+                rows = []
+                for char in sorted(chars, key=lambda c: (round(c["top"], 1), c["x0"])):
+                    if not rows or abs(rows[-1][0]-char["top"]) > .5:
+                        rows.append((char["top"], []))
+                    rows[-1][1].append(char)
+                if len(rows) != len(expected_lines):
+                    raise RuntimeError("Caption PDF line count mismatch: "+case["id"])
+                for line_index, ((_, glyphs), expected) in enumerate(zip(rows, expected_lines)):
+                    actual = "".join(c["text"] for c in sorted(glyphs, key=lambda c: c["x0"]))
+                    # InDesign can emit one trailing PDF space for a soft line break.
+                    # Accept that exact suffix only on a declared broken line; never
+                    # strip source spaces, normalize punctuation, or relax DOM equality.
+                    allowed = [expected]
+                    if line_index < len(expected_lines)-1:
+                        allowed.append(expected+" ")
+                    if actual not in allowed:
+                        raise RuntimeError("Caption PDF glyph mismatch: "+case["id"])
     folder = pdf.parent; document = pdfium.PdfDocument(str(pdf)); thumbs = []
     try:
         for index in range(len(document)):

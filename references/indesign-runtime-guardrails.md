@@ -92,3 +92,14 @@ Compile against ExtendScript's supported syntax (including reserved identifiers 
 - Use source + visual-contract + saved-artifact fingerprints. A no-change cache hit needs no host. A source-count match alone is not a cache hit or an integrity check.
 - Compare local paragraph formatting/geometry as well as text when detecting affected pages; a zero-indent change can keep the same line text and baselines. Follow downstream reflow, not a fixed page number.
 - Keep full native diagnostics on disk and return status, changed pages, timing and failure context to chat. Do not dump the complete source, all names, all pages or whole logs after every small correction.
+
+
+## Caption, body gap and footnote geometry
+
+A left/right common caption may have recorded display-only line breaks, but exact reconstruction of its original string is still required. Validate both displayed text and source reconstruction; do not globally strip all newlines to weaken equality. Keep existing source line breaks and independent captions intact.
+
+In actual publication composition, record the last caption line's visible bottom and the following body line's visible top. Their gap must match one body-leading interval within the project's tolerance; use style spacing, not blank source paragraphs. The standalone image proof has no adjacent article body and does not validate this gap.
+
+For two-column pages, check native `FootnoteOption.enableStraddling` and actual full-width note-area ownership/geometry, including frame overrides and long-note continuation. Two independent single-column frames do not become a full-width note system merely by enabling straddling. Preserve note text, order and reference associations. If no footnotes are present, report not applicable rather than fabricating evidence.
+
+Treat unresolved large avoidable whitespace as a visual acceptance defect. It may require safe resizing/cropping or a documented geometry override; do not label the page visually accepted on the basis of counts/no-overset alone. Required caption/body spacing, safe margins, meaningful content, protected proportions and frozen scopes remain intact.
