@@ -103,3 +103,17 @@ In actual publication composition, record the last caption line's visible bottom
 For two-column pages, check native `FootnoteOption.enableStraddling` and actual full-width note-area ownership/geometry, including frame overrides and long-note continuation. Two independent single-column frames do not become a full-width note system merely by enabling straddling. Preserve note text, order and reference associations. If no footnotes are present, report not applicable rather than fabricating evidence.
 
 Treat unresolved large avoidable whitespace as a visual acceptance defect. It may require safe resizing/cropping or a documented geometry override; do not label the page visually accepted on the basis of counts/no-overset alone. Required caption/body spacing, safe margins, meaningful content, protected proportions and frozen scopes remain intact.
+
+## Version discovery and client-independent runners
+
+Read [platforms-and-clients.md](platforms-and-clients.md) when porting a runner.
+Do not hardcode a release year, executable location, model provider or tool name.
+First discover installed candidates and running processes without COM activation;
+then attach to a single unambiguous target and record actual host version/path.
+Preserve Unicode paths and JSX BOM. Use argument arrays/request files rather than
+shell-built command strings; JSON string escaping is not shell escaping.
+
+The bundled `indesign_runtime.py` launcher serializes its own host jobs and keeps
+request hashes/receipts across short client waits. Reuse an existing verified
+project runner instead of creating parallel host ownership. macOS and Windows need
+their own native smoke tests; Linux and client documentation are not those tests.

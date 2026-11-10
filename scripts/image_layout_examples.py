@@ -179,5 +179,8 @@ def verify():
 
 
 if __name__ == "__main__":
+    import sys
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("phase", choices=["prepare", "verify"])
     args = parser.parse_args(); {"prepare": prepare, "verify": verify}[args.phase]()

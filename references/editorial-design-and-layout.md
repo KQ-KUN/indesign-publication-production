@@ -100,6 +100,7 @@ The current API name `FootnoteOption.enableStraddling` was verified by read-only
 - Use Paragraph/Character/Object/Table/Cell Styles as the primary visual API.
 - Keep content data separate from visual parameters.
 - Use Parent pages for recurring furniture only. Render real content to document pages and return the active view to a document page at the end of a build.
+- For authorized whitespace reflow, pull subsequent body text forward and defer image-caption units instead of copying Word image/text interleaving. Preserve prose order, year/event ownership and note references; record stable-ID display moves. See [text-first gap filling](image-placement.md#text-first-gap-filling-when-media-reflow-is-authorized).
 - Prefer threaded frames, anchored objects, span/split-column settings, and keep options over page-specific coordinate patches. When approved flow repeatedly produces poor closing pages, use an explicit content-ID-based layout override for that bounded tail rather than repeatedly shrinking every image. Preserve locked earlier pages and validate their content placement.
 - If one page genuinely needs an exception, isolate and name it; do not silently weaken the global system.
 

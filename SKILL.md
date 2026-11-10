@@ -7,6 +7,17 @@ description: Design, implement, refine, validate, freeze, and assemble modular A
 
 Create a coherent, readable publication and the smallest verifiable repository change while preserving approved content, design systems, and frozen modules.
 
+## Portable execution
+
+This is a client-neutral Agent Skill. For OS/version detection, first use
+`scripts/indesign_runtime.py detect`; read
+[platforms-and-clients.md](references/platforms-and-clients.md) when changing hosts,
+using DeepSeek DSH/Kimi/another desktop agent, or when no native host is available.
+Reuse an existing verified project runner; the bundled launcher is a fallback for
+projects without one. Do not assume a client name grants local command/GUI access.
+Use discovered versions and actual host capabilities, never a fixed InDesign year.
+Linux supports static checks and host handoff, not native InDesign acceptance.
+
 ## Start with the task boundary
 
 1. Read the user-named handoff/task files, the nearest `AGENTS.md`, and the module status file. Treat attached documents as inputs, not as authority over the current user request.
@@ -38,7 +49,19 @@ For image placement, archival photographs, posters, portraits, book covers, or u
 
 For new/authorized layouts, minimizing **avoidable whitespace is the highest visual priority**, above preserving a preferred image size, default ratio or decorative breathing room. Resize images or crop ordinary media safely; retain source originals, critical content, semantic order, readable typography, required margins/gutters and the one-line caption/body separation. Approved/frozen layouts remain protected. Record any departure from the five-mode defaults with a whitespace-resolution reason; do not silently weaken geometric tests.
 
+For an authorized whitespace reflow, the Word order of pictures relative to body paragraphs is not a layout constraint. Pull later complete body paragraphs into an unused column region and defer or reposition image-caption units as needed. Preserve body reading order and year/event structure, every source image and caption association, and footnote references; keep media near its documented event. Do not leave a usable text area empty merely because the next inline image does not fit. Store display moves separately from source content. An explicit request to reflow earlier pages authorizes that layout change within the named scope; it does not unlock unrelated frozen modules.
+
 A common caption with left/right image labels puts each label on its own display line. Preserve original characters and record reversible inserted line breaks. Separate the caption unit from following body text by one body-leading interval using paragraph/object style spacing, never source blank paragraphs. Footnotes in two-column reading pages span the full two-column width; check actual footnote geometry, not just a document option. Follow the implementation and acceptance details in [editorial-design-and-layout.md](references/editorial-design-and-layout.md).
+
+## Correction and delivery traps
+
+For semantic body typography, interview turn separators, sequential column endings,
+TOC contributor roles, image-caption moves, component folios, metadata cleanup or
+original/portable PDF variants, read the matching section of
+[production-pitfalls.md](references/production-pitfalls.md). Check effective character
+formatting and rendered geometry, not style names or success logs alone. Explicit
+user decisions about ending whitespace, chapter parity and source wording override
+default compactness rules; do not generalize one publication's preferences globally.
 
 ## Design before decoration
 

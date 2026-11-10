@@ -1,0 +1,33 @@
+{
+  "files": [
+    "LICENSE",
+    "README.md",
+    "SKILL.md",
+    "agents/openai.yaml",
+    "distribution-files.json",
+    "references/editorial-design-and-layout.md",
+    "references/external-artwork.md",
+    "references/image-geometry.md",
+    "references/image-placement.md",
+    "references/indesign-runtime-guardrails.md",
+    "references/platforms-and-clients.md",
+    "references/production-pitfalls.md",
+    "references/project-contract-template.md",
+    "references/small-corrections.md",
+    "requirements-test.txt",
+    "scripts/check_frozen_scope.py",
+    "scripts/image_layout.py",
+    "scripts/image_layout_demo.jsx",
+    "scripts/image_layout_examples.py",
+    "scripts/image_layout_host.jsx",
+    "scripts/indesign_runtime.py",
+    "scripts/indesign_windows.ps1",
+    "scripts/inspect_pdf_artwork.py",
+    "scripts/package_skill.py",
+    "scripts/run_image_layout_demo.ps1",
+    "scripts/runtime_probe.jsx",
+    "tests/test_image_layout.py",
+    "tests/test_runtime.py",
+    "tests/test_scripts.py"
+  ]
+}

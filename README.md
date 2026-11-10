@@ -1,6 +1,6 @@
 # InDesign Publication Production Skill
 
-A Codex Skill for editorial design and modular Adobe InDesign/ExtendScript publication work: magazines, journals, commemorative books, catalogs, newsletters, and anthologies.
+An Agent Skill for editorial design and modular Adobe InDesign/ExtendScript publication work: magazines, journals, commemorative books, catalogs, newsletters, and anthologies.
 
 It focuses on the failure-prone parts of real production repositories:
 
@@ -16,9 +16,44 @@ It focuses on the failure-prone parts of real production repositories:
 
 The repository root is the installable Skill directory. `SKILL.md` is the entry point. Supporting references are loaded only when relevant, and `scripts/` contains validation helpers and opt-in image geometry/proof tools.
 
+## Platforms and desktop clients
+
+The package uses standard `SKILL.md` frontmatter and relative resources. It can be
+loaded by Agent Skills clients including DeepSeek DSH and Kimi; actual local tool
+permissions must be checked in each desktop build. The workflow has no Codex-only
+execution dependency. See [installation and compatibility](references/platforms-and-clients.md).
+
+- **Windows:** automatic registered-version/process discovery and PowerShell COM adapter.
+- **macOS:** bundle-version/process discovery and AppleScript adapter; requires Automation consent.
+- **Linux/WSL/containers:** static/PDF validation and transfer to a Windows/macOS host.
+
+```text
+python scripts/indesign_runtime.py detect
+python scripts/indesign_runtime.py run scripts/runtime_probe.jsx --expect-prefix "PASS "
+python scripts/indesign_runtime.py status <returned-job-directory> --wait-seconds 10
+python scripts/package_skill.py --out .artifacts/indesign-publication-production.zip
+```
+
+Use Python 3.10+ (`python3` on systems where appropriate). No application is launched
+by detection; cold launch is explicit with `--allow-launch`. A running receipt is
+resumed with `status`, not rerun. `COMPLETED` means the host returned, not that a
+publication is visually approved. Version hints select candidates; `app.version`
+and executable identity verify the attached host. Run only authorized JSX scripts.
+
+Project installation shared by DSH/Kimi: place this whole folder at
+`.agents/skills/indesign-publication-production/`. Kimi Work also provides local
+Skill import; verify the particular UI/import format. Plain chat/web modes without
+local tools can prepare work but cannot run local InDesign. Platform/client status
+must distinguish documentation, fixture coverage and actual host/client tests.
+
+[Production correction rules](references/production-pitfalls.md) cover character-level
+typography, image/caption alignment, sequential endings, interview turns, complete
+issue assembly, metadata and distribution variants. Existing local layout contracts
+remain authoritative.
+
 ## How to use
 
-Invoke it explicitly with `$indesign-publication-production`, then provide the publication goal, source files, allowed change scope, existing design authority, and the validation level you want.
+Use the client's Skill picker (Codex: `$indesign-publication-production`; Kimi Code: `/skill:indesign-publication-production`), or ask the agent to load `SKILL.md`, then provide the publication goal, source files, allowed change scope, existing design authority, and the validation level you want.
 
 Examples:
 
@@ -59,12 +94,26 @@ powershell -File scripts/run_image_layout_demo.ps1 -Python python
 
 The proof includes five modes, unequal-aspect cropping, a trimmed portrait and an intentionally rejected padded-canvas negative. Inspect its five rendered pages before claiming visual acceptance. No approved publication is migrated automatically.
 
-Run the included tests with:
+Run the included tests with (Python 3.10+):
 
 ```powershell
-python -m unittest discover -s tests -v
+python -m pip install -r requirements-test.txt
+python -X utf8 -m unittest discover -s tests -v
 ```
 
 ## License
 
 MIT
+
+## Verification status
+
+As of 2026-11-11: Windows native discovery and read-only JSX dispatch verified on
+InDesign 21.5.1.73 / Python 3.13.5. Unit tests cover version selection, macOS plist
+and process fixtures, Linux fallback, job resume/locking, source mutation and
+explicit distribution filtering. CI tests Python 3.10/3.13 on Windows/macOS/Linux;
+it does not install InDesign or validate desktop-client UI integration.
+
+macOS native execution, additional InDesign versions, and real DSH/Kimi desktop
+Skill load/command invocation still require tests on those environments. These are
+implemented/documented routes, not claimed native/client acceptance. No private
+publication files or generated diagnostics are distributed in this repository.
