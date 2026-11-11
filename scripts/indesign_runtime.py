@@ -77,7 +77,7 @@ def windows_inventory() -> tuple[list[dict], list[dict], list[str]]:
                     with winreg.OpenKey(root, "CLSID\\" + clsid + "\\LocalServer32") as key:
                         path = windows_executable(winreg.QueryValue(key, ""))
                     if path and Path(path).is_file():
-                        candidates.append({"id": name, "path": path, "version_hint": name.removeprefix("InDesign.Application."), "backend": "windows-com"})
+                        candidates.append({"id": name, "path": str(Path(path).resolve()), "version_hint": name.removeprefix("InDesign.Application."), "backend": "windows-com"})
                 except OSError:
                     continue
     script = "[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false); @(Get-Process InDesign -ErrorAction SilentlyContinue | ForEach-Object { [pscustomobject]@{pid=$_.Id;path=$_.Path} }) | ConvertTo-Json -Compress"
@@ -124,7 +124,7 @@ def mac_inventory(roots: list[Path] | None = None) -> tuple[list[dict], list[dic
         match = re.match(r"\s*(\d+)\s+(.+)", line)
         if match:
             for candidate in candidates:
-                if match.group(2) == candidate["executable"]:
+                if os.path.normcase(str(Path(match.group(2)).resolve())) == os.path.normcase(candidate["executable"]):
                     running.append({"pid": int(match.group(1)), "path": candidate["path"]})
     return list({c["id"]: c for c in candidates}.values()), running, []
 
@@ -141,7 +141,7 @@ def detect() -> dict:
     except (OSError, ValueError, subprocess.TimeoutExpired, RuntimeFailure) as exc:
         warnings.append(str(exc))
     for candidate in candidates:
-        candidate["running_pids"] = [p["pid"] for p in running if os.path.normcase(p.get("path") or "") == os.path.normcase(candidate["path"])]
+        candidate["running_pids"] = [p["pid"] for p in running if p.get("path") and os.path.normcase(str(Path(p["path"]).resolve())) == os.path.normcase(candidate["path"])]
     return {"system": system, "python": platform.python_version(), "native_platform": system in ("Windows", "Darwin"), "candidates": candidates, "running": running, "discovery_complete": not warnings, "warnings": warnings, "fallback": "Static validation and JSX handoff to a licensed Windows/macOS InDesign host; never claim Linux native layout."}
 
 

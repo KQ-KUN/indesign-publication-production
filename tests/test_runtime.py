@@ -77,7 +77,7 @@ class RuntimeTests(unittest.TestCase):
             with patch.object(runtime, "execute", return_value=process):
                 candidates, running, warnings = runtime.mac_inventory([root])
             self.assertEqual(candidates[0]["version_hint"], "42.1")
-            self.assertEqual(running[0]["path"], str(bundle))
+            self.assertEqual(running[0]["path"], str(bundle.resolve()))
             self.assertEqual(len(running), 1)
             self.assertEqual(warnings, [])
 
@@ -87,6 +87,18 @@ class RuntimeTests(unittest.TestCase):
         self.assertIn('if not (application ', source)
         self.assertIn('\\"quoted\\"', source)
         self.assertIn('language javascript', source)
+
+    def test_macos_running_bundle_through_symlinked_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);real=root / "real";real.mkdir();alias=root / "alias"
+            try:alias.symlink_to(real,target_is_directory=True)
+            except OSError:self.skipTest("OS account does not permit creating directory symlinks")
+            bundle=alias / "Adobe InDesign.app";(bundle / "Contents").mkdir(parents=True)
+            (bundle / "Contents/Info.plist").write_bytes(plistlib.dumps({"CFBundleIdentifier":"com.adobe.InDesign","CFBundleShortVersionString":"42.1","CFBundleExecutable":"Adobe InDesign"}))
+            process=subprocess.CompletedProcess([],0,f" 99 {bundle / 'Contents/MacOS/Adobe InDesign'}\n","")
+            with patch.object(runtime,"execute",return_value=process):
+                candidates,running,_=runtime.mac_inventory([alias])
+            self.assertEqual(running,[{"pid":99,"path":str(bundle.resolve())}])
 
     def test_wait_returns_running_without_dispatch(self):
         with tempfile.TemporaryDirectory() as tmp:
